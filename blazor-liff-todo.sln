@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29924.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Client", "Todo.Client\Todo.Client.csproj", "{6D34BD69-E47E-41CD-922E-C2335FE9A7FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoBot.Client", "TodoBot.Client\TodoBot.Client.csproj", "{A183E086-2957-4629-BF36-98400255C914}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6D34BD69-E47E-41CD-922E-C2335FE9A7FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D34BD69-E47E-41CD-922E-C2335FE9A7FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D34BD69-E47E-41CD-922E-C2335FE9A7FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D34BD69-E47E-41CD-922E-C2335FE9A7FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A183E086-2957-4629-BF36-98400255C914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A183E086-2957-4629-BF36-98400255C914}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A183E086-2957-4629-BF36-98400255C914}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A183E086-2957-4629-BF36-98400255C914}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
