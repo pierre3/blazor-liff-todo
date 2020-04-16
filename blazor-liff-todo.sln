@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29924.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoBot.Client", "TodoBot.Client\TodoBot.Client.csproj", "{A183E086-2957-4629-BF36-98400255C914}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoBot.Shared", "TodoBot.Shared\TodoBot.Shared.csproj", "{253D22D4-7BBC-410A-B522-2490D3159C8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoBot.Shared", "TodoBot.Shared\TodoBot.Shared.csproj", "{253D22D4-7BBC-410A-B522-2490D3159C8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoBot.Server", "TodoBot.Server\TodoBot.Server.csproj", "{DCBAE3C8-E5A7-438E-9AF9-D65257EB5C06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoBot.Server", "TodoBot.Server\TodoBot.Server.csproj", "{DCBAE3C8-E5A7-438E-9AF9-D65257EB5C06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using LineDC.Liff;
 using Microsoft.Extensions.Configuration;
+using TodoBot.Client.Services;
+using System.Net.Http;
 
 namespace TodoBot.Client
 {
@@ -21,6 +23,11 @@ namespace TodoBot.Client
                 var appSettings = serviceProvider
                     .GetRequiredService<IConfiguration>().Get<AppSettings>();
                 return new LiffClient(appSettings.LiffId);
+            });
+            builder.Services.AddSingleton<ITodoClient>(serviceProvider => {
+                var httpClient = serviceProvider.GetRequiredService<HttpClient>();
+                var appsettings = serviceProvider.GetRequiredService<IConfiguration>().Get<AppSettings>();
+                return new TodoClient(httpClient, appsettings.FunctionUrl);
             });
             await builder.Build().RunAsync();
         }
