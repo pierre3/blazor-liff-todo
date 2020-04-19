@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-namespace TodoBot.Shared
+﻿namespace TodoBot.Shared
 {
     /// <summary>
     /// Todoステータス
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter), new object[] { true })]
     public enum Status
     {
         /// <summary>

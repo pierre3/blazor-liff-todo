@@ -34,16 +34,7 @@
 
     async Task CreateTodoAsync(Todo todo)
     {
-        ErrorMessage = null;
-        try
-        {
-            todo.UserId = UserId;
-
-            await TodoClient.CreateTodoAsync(AccessToken, todo);
-        }
-        catch (Exception e)
-        {
-            ErrorMessage = e.Message;
-        }
+        todo.UserId = UserId;
+        await TodoClient.CreateTodoAsync(AccessToken, todo);   
     }
 }

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web.Http;
 using TodoBot.Server.Services;
@@ -16,6 +16,10 @@ namespace TodoBot.Server
     {
         private readonly ITodoRepository todoRepository;
         private readonly ILineTokenService lineTokenService;
+        private readonly JsonSerializerOptions jsonSerializerOptions
+            = new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
 
         public TodoBotFunction(ITodoRepository todoRepository, ILineTokenService lineTokenService)
         {
@@ -37,18 +41,18 @@ namespace TodoBot.Server
             try
             {
                 var json = await req.ReadAsStringAsync();
-                var todo = JsonConvert.DeserializeObject<Todo>(json);
+                var todo = JsonSerializer.Deserialize<Todo>(json, jsonSerializerOptions);
 
                 if (string.IsNullOrEmpty(todo?.UserId))
                 {
-                    return new BadRequestObjectResult(JsonConvert.SerializeObject(new { Message = $"{nameof(todo.UserId)} is required." }));
+                    return new BadRequestObjectResult(JsonSerializer.Serialize(new { Message = $"{nameof(todo.UserId)} is required." }));
                 }
 
                 await todoRepository.CreateTodoAsync(todo);
 
                 return new CreatedResult("", $"{{\"id\":\"{todo.Id}\"}}");
             }
-            catch (JsonSerializationException e)
+            catch (JsonException e)
             {
                 return new BadRequestObjectResult(e.Message);
             }
@@ -69,12 +73,12 @@ namespace TodoBot.Server
             try
             {
                 var json = await req.ReadAsStringAsync();
-                var todo = JsonConvert.DeserializeObject<Todo>(json);
+                var todo = JsonSerializer.Deserialize<Todo>(json, jsonSerializerOptions);
 
                 await todoRepository.UpdateTodoAsync(id, todo);
                 return new OkResult();
             }
-            catch (JsonSerializationException e)
+            catch (JsonException e)
             {
                 return new BadRequestObjectResult(e.Message);
             }
@@ -98,10 +102,6 @@ namespace TodoBot.Server
             {
                 var todolist = await todoRepository.GetTodoListAsync(userId);
                 return new OkObjectResult(todolist);
-            }
-            catch (JsonSerializationException e)
-            {
-                return new BadRequestObjectResult(e.Message);
             }
             catch (Exception e)
             {
@@ -129,10 +129,6 @@ namespace TodoBot.Server
                 var todo = await todoRepository.GetTodoAsync(userId, id);
                 return new OkObjectResult(todo);
             }
-            catch (JsonSerializationException e)
-            {
-                return new BadRequestObjectResult(e.Message);
-            }
             catch (Exception e)
             {
                 log.LogError(e, $"{nameof(GetTodo)} GetTodoAsync faild");
@@ -157,10 +153,6 @@ namespace TodoBot.Server
             {
                 await todoRepository.DeleteTodoAsync(userId, id);
                 return new OkResult();
-            }
-            catch (JsonSerializationException e)
-            {
-                return new BadRequestObjectResult(e.Message);
             }
             catch (Exception e)
             {

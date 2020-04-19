@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using TodoBot.Shared;
 
@@ -20,62 +19,40 @@ namespace TodoBot.Client.Services
 
         public async Task<IList<Todo>> GetTodoListAsync(string accessToken, string userId)
         {
-            var response = await SendAsync(
-                accessToken,
-                HttpMethod.Get,
-                $"{requestUrl}/api/{userId}/todoList");
-            var body = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IList<Todo>>(body) ?? new List<Todo>();
+            SetAccessTokenHeader(accessToken);
+            return await httpClient.GetFromJsonAsync<IList<Todo>>($"{requestUrl}/api/{userId}/todoList");
         }
 
         public async Task<Todo> GetTodoAsync(string accessToken, string userId, string id)
         {
-            var response = await SendAsync(
-                accessToken,
-                HttpMethod.Get,
-                $"{requestUrl}/api/{userId}/todoList/{id}");
-            var body = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Todo>(body);
+            SetAccessTokenHeader(accessToken);
+            return await httpClient.GetFromJsonAsync<Todo>($"{requestUrl}/api/{userId}/todoList/{id}");
         }
 
         public async Task UpdateTodoAsync(string accessToken, string id, Todo todo)
         {
-            var json = JsonConvert.SerializeObject(todo);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            await SendAsync(
-                accessToken,
-                HttpMethod.Put,
-                $"{requestUrl}/api/todoList/{id}",
-                content);
+            SetAccessTokenHeader(accessToken);
+            var response = await httpClient.PutAsJsonAsync($"{requestUrl}/api/todoList/{id}", todo);
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task CreateTodoAsync(string accessToken, Todo todo)
         {
-            var json = JsonConvert.SerializeObject(todo);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            await SendAsync(
-                accessToken,
-                HttpMethod.Post,
-                $"{requestUrl}/api/todoList",
-                content);
+            SetAccessTokenHeader(accessToken);
+            var response = await httpClient.PostAsJsonAsync($"{requestUrl}/api/todoList", todo);
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task DeleteTodoAsync(string accessToken, string userId, string id)
         {
-            await SendAsync(
-                accessToken,
-                HttpMethod.Delete,
-                $"{requestUrl}/api/{userId}/todoList/{id}");
+            SetAccessTokenHeader(accessToken);
+            var response = await httpClient.DeleteAsync($"{requestUrl}/api/{userId}/todoList/{id}");
+            response.EnsureSuccessStatusCode();
         }
-
-
-        private async Task<HttpResponseMessage> SendAsync(string accessToken, HttpMethod method, string url, HttpContent content = null)
+        private void SetAccessTokenHeader(string accessToken)
         {
-            var request = new HttpRequestMessage(method, url);
-            request.Headers.Add(ApiServer.AccessTokenHeaderName, accessToken);
-            request.Content = content;
-            var response = await httpClient.SendAsync(request);
-            return response.EnsureSuccessStatusCode();
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add(ApiServer.AccessTokenHeaderName, accessToken);
         }
     }
 }

@@ -1,14 +1,10 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 
 namespace TodoBot.Shared
 {
     /// <summary>
     /// Todo Model
     /// </summary>
-    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class Todo
     {
         /// <summary>
@@ -39,7 +35,6 @@ namespace TodoBot.Shared
         /// <summary>
         /// 期日
         /// </summary>
-        [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime DueDate { get; set; }
 
         public Todo()
