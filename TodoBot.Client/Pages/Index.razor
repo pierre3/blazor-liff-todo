@@ -84,11 +84,26 @@ else
 
 
 @code{
+    /// <summary>
+    /// フィルター種別種別
+    /// </summary>
     enum FilterType
     {
+        /// <summary>
+        /// 未完（Ready + Doing）
+        /// </summary>
         NotCompleted,
+        /// <summary>
+        /// New！
+        /// </summary>
         Ready,
+        /// <summary>
+        /// 実施中
+        /// </summary>
         Doing,
+        /// <summary>
+        /// キャンセル
+        /// </summary>
         Completed
     }
     FilterType Filter { get; set; } = FilterType.NotCompleted;
@@ -98,6 +113,7 @@ else
     string UserId { get; set; }
     string AccessToken { get; set; }
     string ErrorMessage { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         ErrorMessage = null;
@@ -115,6 +131,9 @@ else
         }
     }
 
+    /// <summary>
+    /// Todo一覧の取得
+    /// </summary>
     private async Task ListTodoAsync()
     {
         ErrorMessage = null;
@@ -126,21 +145,23 @@ else
                 ErrorMessage = "Could not get the accessToken.";
                 return;
             }
-
-
+            //IDトークンに含まれるユーザーIDを取得
             var idToken = await Liff.GetDecodedIDToken();
             UserId = idToken?.Sub;
             if (string.IsNullOrEmpty(UserId))
             {
-                ErrorMessage = "User ID ";
+                ErrorMessage = "Failed to get a user ID.";
                 return;
             }
+            //アクセストークンの取得
             AccessToken = await Liff.GetAccessToken();
             if (string.IsNullOrEmpty(AccessToken))
             {
-                ErrorMessage = "Access Token";
+                ErrorMessage = "Failed to get an access token.";
             }
+            //指定したユーザーのTodo一覧を取得
             SourceTodoList = await TodoClient.GetTodoListAsync(AccessToken, UserId);
+            //選択されているフィルター種別で一覧を絞り込み
             FilterTodoList(Filter);
 
         }
@@ -150,11 +171,17 @@ else
         }
     }
 
+    /// <summary>
+    /// Todo一覧のフィルター
+    /// </summary>
+    /// <param name="filterType">フィルター種別</param>
     private void FilterTodoList(FilterType filterType)
     {
         Filter = filterType;
 
         if (SourceTodoList == null) { return; }
+        //DBから全件取得し、SourceTodoList格納
+        //選択されているフィルタータイプに応じて絞り込み、表示用のTodoListに設定する
         switch (Filter)
         {
             case FilterType.NotCompleted:
@@ -173,7 +200,11 @@ else
         StateHasChanged();
     }
 
-
+    /// <summary>
+    /// ステータス更新
+    /// </summary>
+    /// <param name="todo">対象Todo</param>
+    /// <param name="status">変更後のステータス</param>
     private async Task UpdateStatusAsync(Todo todo, Status status)
     {
         ErrorMessage = null;
@@ -189,6 +220,10 @@ else
         }
     }
 
+    /// <summary>
+    /// Todoの削除
+    /// </summary>
+    /// <param name="id">対象TodoのID</param>
     private async Task DeleteAsync(string id)
     {
         ErrorMessage = null;
@@ -203,12 +238,19 @@ else
         }
     }
 
+    /// <summary>
+    /// 編集画面への遷移
+    /// </summary>
+    /// <param name="id">編集対象TodoのID</param>
     private void Edit(string id)
     {
 
         Navigation.NavigateTo($"{Navigation.BaseUri}edit/{id}");
     }
 
+    /// <summary>
+    /// 新規作成画面への遷移
+    /// </summary>
     private void Create()
     {
         Navigation.NavigateTo($"{Navigation.BaseUri}create");
