@@ -19,12 +19,11 @@ namespace TodoBot.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
             var appSettings = builder.Configuration.Get<AppSettings>();
-            var httpClient = new HttpClient
+            
+            builder.Services.AddSingleton(new HttpClient
             {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
-            };
-
-            builder.Services.AddSingleton(httpClient);
+            });
             builder.Services.AddSingleton<ILiffClient>(new LiffClient(appSettings.LiffId));
             if (string.IsNullOrEmpty(appSettings?.FunctionUrl))
             {
@@ -32,8 +31,10 @@ namespace TodoBot.Client
             }
             else
             {
-                builder.Services.AddSingleton<ITodoClient>(
-                    new TodoClient(httpClient, appSettings?.FunctionUrl));
+                builder.Services.AddSingleton<ITodoClient>(serviceProvider => {
+                    var httpClient = serviceProvider.GetRequiredService<HttpClient>();
+                    return new TodoClient(httpClient, appSettings?.FunctionUrl);
+                });
             }
             await builder.Build().RunAsync();
         }
