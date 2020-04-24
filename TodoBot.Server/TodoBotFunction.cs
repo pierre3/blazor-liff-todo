@@ -82,8 +82,6 @@ namespace TodoBot.Server
             {
                 return new BadRequestObjectResult(e.Message);
             }
-
-
         }
 
         [FunctionName("GetTodoList")]

@@ -8,6 +8,7 @@ using LineDC.Liff;
 using Microsoft.Extensions.Configuration;
 using TodoBot.Client.Services;
 using System.Net.Http;
+using TodoBot.Client.Srvices;
 
 namespace TodoBot.Client
 {
@@ -28,8 +29,12 @@ namespace TodoBot.Client
                 return new LiffClient(appSettings.LiffId);
             });
             builder.Services.AddSingleton<ITodoClient>(serviceProvider => {
-                var httpClient = serviceProvider.GetRequiredService<HttpClient>();
                 var appsettings = serviceProvider.GetRequiredService<IConfiguration>().Get<AppSettings>();
+                if (string.IsNullOrEmpty(appsettings?.FunctionUrl))
+                {
+                    return new MockTodoClient();
+                }
+                var httpClient = serviceProvider.GetRequiredService<HttpClient>();
                 return new TodoClient(httpClient, appsettings.FunctionUrl);
             });
             await builder.Build().RunAsync();
